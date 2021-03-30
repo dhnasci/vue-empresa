@@ -7,27 +7,16 @@
       </div>
     </div>
 
-    <div class="container">
-
-      <div class="row">
-        <div class="col-sm-12">
-          <EmpresasLista />
-        </div>
-       
-      </div>
-
-    </div>
+      <router-view></router-view>
 
   </div>
 </template>
 
 <script>
-import EmpresasLista from '@/components/EmpresasLista.vue'
+
 
 export default {
-  components: {
-    EmpresasLista
-  }
+  
 }
 
 </script>

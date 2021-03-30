@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
         <div class="col-sm-10">
-            <h1 class="font-weight-light">Lista de Empresas</h1>
+            <h2 class="font-weight-light">Lista de Empresas</h2>
         </div>
         <div class="col-sm-2">
             <button 
@@ -21,6 +21,7 @@
                 :key="empresa.id"
                 :empresa="empresa"
                 @editar="selecionarEmpresaParaEdicao"
+                @selecionar="$router.push(`/empresas/${empresa.id}/editar`)"
             />
         </ul>
         <p v-else> Nenhuma empresa criada.</p>

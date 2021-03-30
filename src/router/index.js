@@ -1,16 +1,32 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import EmpresasLista from '../components/EmpresasLista.vue'
+
+const EmpresaEditar = () => import('../components/EmpresaEditar.vue')
+const EmpresasLista = () => import('../components/EmpresasLista.vue')
+
+const extrairParametroId = route => ({
+  id: +route.params.id
+})
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/empresas/:id(\\id+)',
+    alias: '/empresas/:id(\\id+)/editar',
+    component: EmpresaEditar,
+    name: 'empresa',
+    props: extrairParametroId
+  },
+  {
+    path: '/empresas',
     name: 'Empresas',
     component: EmpresasLista
   },
- 
+  { 
+    path: '/', 
+    redirect: '/empresas'
+  },
 ]
 
 const router = new VueRouter({

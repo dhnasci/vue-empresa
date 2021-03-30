@@ -21,5 +21,10 @@ export default {
     }, 
     selecionarEmpresa: ({commit}, payload) => {
         commit(types.SELECIONAR_EMPRESA, payload)
+    },
+    buscarEmpresaPorId: ( {commit}, id) => {
+        return EmpresasService.getEmpresas(id).then(
+            response => { commit(types.SELECIONAR_EMPRESA, {empresa: response.data}) }
+        ).catch( erro => commit(types.SETAR_ERRO, { erro }))
     }
 }
