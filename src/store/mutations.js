@@ -9,7 +9,6 @@ import {
 
 export default {
     [LISTAR_EMPRESAS]: (state, {empresas}) => {
-        console.log('mutation LISTAR_EMPRESAS '+ empresas)
         state.empresas = empresas
     },
     [SETAR_ERRO]: (state, { erro }) => {

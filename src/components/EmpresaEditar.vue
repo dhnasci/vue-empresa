@@ -1,84 +1,109 @@
 <template>
   <div class="container">
-    <div class="row">
-      <h2 class="font-weight-light">Editar Empresa</h2>
-    </div>
-    <form @submit.prevent="salvar">
-      <div class="form-group">
-            <label>Nome</label>
+    
+      <div class="row col-sm-12">
+          <h2 class="font-weight-light col-sm-12">Editar Empresa</h2>
+      </div>
+      <form @submit.prevent="salvar">
+       
+       <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Id</label>
+            <input 
+                type="number" 
+                readonly 
+                class="form-control col-sm-10" 
+                v-model="empresaLocal.id">
+        </div>
+
+         <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Nome</label>
             <input 
                 type="text" 
-                class="form-control" 
-                placeholder="Insira o nome" 
-                v-model="empresa.nome">
+                class="form-control col-sm-10" 
+                placeholder="Insira o nome completo" 
+                v-model="empresaLocal.nome">
         </div>
-        <div class="form-group">
-            <label>CNPJ</label>
+     
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">CNPJ</label>
             <input 
                 type="text" 
-                class="form-control" 
-                placeholder="Insira o nome" 
-                v-model="empresa.cnpj">
+                class="form-control col-sm-10" 
+                placeholder="Insira o CNPJ com separadores" 
+                v-model="empresaLocal.cnpj">
         </div>
-        <div class="form-group">
-            <label>Endereço</label>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Endereço</label>
             <input 
                 type="text" 
-                class="form-control" 
-                placeholder="Insira o nome" 
-                v-model="empresa.endereco">
+                class="form-control col-sm-10" 
+                placeholder="Insira o Endereço completo" 
+                v-model="empresaLocal.endereco">
         </div>
-        <div class="form-group">
-            <label>Email</label>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Email</label>
             <input 
                 type="email" 
-                class="form-control" 
+                class="form-control col-sm-10" 
                 placeholder="Insira o email"
-                v-model="empresa.email">
+                v-model="empresaLocal.email">
         </div>
         <button 
                 type="button" 
                 class="btn btn-secondary mt-4 mb-4 mr-2" 
-                @click="$router.back()">
+                @click="$emit('voltar')"
+                >
                     Voltar
             </button>
             <button 
-                type="submit" 
+                @click="submit"
                 class="btn btn-success">
                     Salvar
             </button>
-    </form>
+      </form>   
+  
   </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 
-
 export default {
-  props: ['id'],
   data() {
     return { 
-      empresa: undefined
+      empresaLocal: {}
     }
-  }, 
+  },
   computed: {
         ...mapState(['erro', 'empresaSelecionada', 'empresas']),
         ...mapGetters(['totalDeEmpresas'])
     },
-  beforeRouteEnter(to, from, next) {
-    next( vm => {
-      console.log('beforeRouteEnter ' + to.params.id)
-      console.log('vm ' + vm)
-      vm.buscarEmpresaPorId(+to.params.id)
-      vm.empresa = vm.empresaSelecionada;
-    });
+  watch: {
+    empresaSelecionada(empresaNova, empresaAntiga){
+      console.log('empresa Antiga: ' + empresaAntiga.nome);
+      this.sincronizar(empresaNova)
+    }
+  },
+  created() {
+    console.log('created EmpresaEditar')
+    this.sincronizar(this.empresaSelecionada)
   },
   methods: {
-    ...mapActions(['listarEmpresas', 'criarEmpresa', 'selecionarEmpresa', 'buscarEmpresaPorId']),
-    salvar(event) {
-      console.log('salvar ' + event)
-      this.$router.push('/empresas')
+    ...mapActions(['listarEmpresas', 'criarEmpresa', 'editarEmpresa', 'selecionarEmpresa', 'buscarEmpresaPorId']),
+    submit() {
+      console.log('salvar clicado submit ')
+      try {
+        this.editarEmpresa( { empresa: this.empresaLocal})
+        alert('Empresa editada com sucesso!')
+      } catch (error) {
+        alert('Erro ao editar empresa: ' + error.message)
+      }
+    },
+    sincronizar( novaEmpresa) {
+      this.empresaLocal = Object.assign( 
+          {}, 
+          novaEmpresa || { nome: '', cnpj: '', endereco: '', email: ''}
+      )
     }
   }
 
