@@ -1,11 +1,9 @@
 <template>
   <div class="container">
-    
       <div class="row col-sm-12">
           <h2 class="font-weight-light col-sm-12">Editar Empresa</h2>
       </div>
       <form @submit.prevent="submit">
-       
        <div class="form-group row">
             <label class="col-sm-2 col-form-label">Id</label>
             <input 
@@ -14,7 +12,6 @@
                 class="form-control col-sm-10" 
                 v-model="empresaLocal.id">
         </div>
-
          <div class="form-group row">
             <label class="col-sm-2 col-form-label">Nome</label>
             <input 
@@ -23,7 +20,6 @@
                 placeholder="Insira o nome completo" 
                 v-model="empresaLocal.nome">
         </div>
-     
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">CNPJ</label>
             <input 
@@ -62,7 +58,6 @@
                     Salvar
             </button>
       </form>   
-  
   </div>
 </template>
 

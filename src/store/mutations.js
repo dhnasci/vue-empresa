@@ -18,7 +18,8 @@ export default {
         state.empresaSelecionada = empresa
     },
     [CRIAR_EMPRESA]: (state, { empresa }) => {
-        state.tarefas.push(empresa)
+        console.log('CRIAR_EMPRESA > ', empresa.nome)
+        state.empresas.push(empresa)
     },
     [EDITAR_EMPRESA]: (state, { empresa }) => {
         const indice = state.empresas.findIndex(emp => emp.id === empresa.id)

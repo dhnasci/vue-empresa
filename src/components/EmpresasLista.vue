@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    
     <div class="row" v-if="!exibirFormulario">
         <div class="row col-sm-12">
             <div class="col-sm-10 text-center">
@@ -14,7 +13,16 @@
                         <span>Criar</span>
                 </button>
             </div>
-        
+        </div>
+        <div class="row col-sm-12" v-if="mensagem">
+            <div class="alert" :class="tipoMensagem" role="alert">
+            {{mensagem}}
+            </div>
+        </div>
+        <div class="row col-sm-12" v-if="!erro==''">
+            <div class="alert alert-danger"  role="alert">
+            {{erro}}
+            </div>
         </div>
         <ul class="list-group col-sm-12" v-if="empresas.length > 0">
             <EmpresasListaItem 
@@ -23,10 +31,14 @@
                 :empresa="empresa"
                 @editar="selecionarEmpresaParaEdicao"
                 @selecionar="selecionarParaMostrar"
-                @deletar="deletarEmpresa({empresa})"
+                @deletar="confirmaApagar"
             />
         </ul>
-        <p v-else> Nenhuma empresa criada.</p>
+        <div v-else class="row col-sm-12 align-middle"> 
+            <div class="alert-warning text-center col-sm-12 " role="alert">
+                <p>Nenhuma empresa criada ou servidor desligado</p>
+            </div>
+        </div>
     </div>
     <div class="row" v-else>
        <empresa-editar 
@@ -67,16 +79,28 @@ export default {
             exibirSelecionada: false,
             exibirEditada: false,
             exibirApagada: false,
-            exibirCriada: false
+            exibirCriada: false,
+            mensagem: '',
+            tipoMensagem: 'alert-success'
         }
     }, 
     computed: {
         ...mapState(['erro', 'empresaSelecionada', 'empresas']),
         ...mapGetters(['totalDeEmpresas'])
     },
+    beforeUpdate(){
+        if (!this.exibirFormulario && this.exibirCriada){
+            console.log('beforeUpdate EmpresasLista')
+            this.listarEmpresas()
+            this.exibirCriada = false
+        }
+    },
     created() {
         console.log('created EmpresasLista')
-        this.listarEmpresas();
+        this.listarEmpresas()
+    },
+    watch: {
+        
     },
     methods: {
         ...mapActions(['listarEmpresas', 'criarEmpresa', 'selecionarEmpresa', 'deletarEmpresa']),
@@ -106,26 +130,30 @@ export default {
             this.exibirApagada = false
             this.exibirCriada = true
         },
-        mostraEditarSalvo(){
-            console.log('empresa editada')
+        mostraEditarSalvo() {
             this.exibirFormulario = false
-            this.listarEmpresas()
         },
         mostraCriarSalvo(emp) {
+            emp.id = this.totalDeEmpresas + 1
+            console.log('mostraCriarSalvo ' + emp) 
             this.criarEmpresa({empresa: emp}).then(
-               this.exibirFormulario = false
+                this.exibirFormulario = false
             ).then(
-                this.listarEmpresas()
-            ).then(
-                alert('Empresa criada com sucesso!')
+                this.mensagem = 'Empresa criada com sucesso!'
             ).catch(
-                error => alert('Erro ao criar empresa asinc: ' + error.message)
+                error => {
+                    this.mensagem = 'Erro ao criar empresa: ' + error.message
+                    this.tipoMensagem = 'alert-danger'
+                }
             )
         },
-        
-
+        confirmaApagar(emp){
+            const ok = confirm('Deseja realmente apagar empresa?')
+            if (ok) {
+                this.deletarEmpresa({empresa: emp})
+            }
+        }
     }
-
 }
 </script>
 

@@ -83,7 +83,6 @@ export default {
     ...mapActions(['listarEmpresas', 'criarEmpresa', 'editarEmpresa', 'selecionarEmpresa', 'buscarEmpresaPorId']),
     submit() {
       console.log('EmpresaCriar salvar clicado submit ')
-      
     }
   }
 

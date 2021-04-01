@@ -16,6 +16,7 @@ export default {
         return apiClient.get( `/empresas/${id}`)
     }, 
     postEmpresa(empresa) {
+        console.log('postEmpresa empresa: ' + empresa.nome)
         return apiClient.post('/empresas/', empresa)
     },
     putEmpresa(empresa) {
