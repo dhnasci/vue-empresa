@@ -9,7 +9,7 @@
             <div class="col-sm-2">
                 <button 
                     class="btn btn-primary float-right" 
-                    @click="exibirFormularioCriar">
+                    @click="selecionarParaCriar">
                         <i class="fa fa-plus mr-2"></i>
                         <span>Criar</span>
                 </button>
@@ -23,6 +23,7 @@
                 :empresa="empresa"
                 @editar="selecionarEmpresaParaEdicao"
                 @selecionar="selecionarParaMostrar"
+                @deletar="deletarEmpresa({empresa})"
             />
         </ul>
         <p v-else> Nenhuma empresa criada.</p>
@@ -36,6 +37,11 @@
             v-if="exibirSelecionada"
             @voltar="exibirFormulario=false"
         />
+        <empresa-criar 
+            v-if="exibirCriada"
+            @voltar="exibirFormulario=false"
+            @criar="mostraCriarSalvo"
+        />
     </div>
   </div>
 </template>
@@ -45,19 +51,23 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import EmpresasListaItem  from './EmpresasListaItem.vue'
 import EmpresaEditar from './EmpresaEditar.vue'
 import EmpresaDetalhes from './EmpresaDetalhes.vue'
+import EmpresaCriar from './EmpresaCriar.vue'
+
 
 export default {
     components: {
         EmpresasListaItem,
         EmpresaEditar,
-        EmpresaDetalhes
+        EmpresaDetalhes,
+        EmpresaCriar
     },
     data() {
         return {
             exibirFormulario: false,
             exibirSelecionada: false,
             exibirEditada: false,
-            exibirApagada: false
+            exibirApagada: false,
+            exibirCriada: false
         }
     }, 
     computed: {
@@ -69,7 +79,7 @@ export default {
         this.listarEmpresas();
     },
     methods: {
-        ...mapActions(['listarEmpresas', 'criarEmpresa', 'selecionarEmpresa']),
+        ...mapActions(['listarEmpresas', 'criarEmpresa', 'selecionarEmpresa', 'deletarEmpresa']),
         exibirFormularioCriar() {
             this.exibirFormulario = !this.exibirFormulario
         }, 
@@ -78,6 +88,7 @@ export default {
             this.exibirEditada = true
             this.exibirApagada = false
             this.exibirSelecionada = false
+            this.exibirCriada = false
             this.selecionarEmpresa(empresa)
         },
         selecionarParaMostrar(empresa) {
@@ -85,13 +96,34 @@ export default {
             this.exibirSelecionada = true
             this.exibirEditada = false
             this.exibirApagada = false
+            this.exibirCriada = false
             this.selecionarEmpresa(empresa)
         },
+        selecionarParaCriar() {
+            this.exibirFormulario = true
+            this.exibirSelecionada = false
+            this.exibirEditada = false
+            this.exibirApagada = false
+            this.exibirCriada = true
+        },
         mostraEditarSalvo(){
-            console.log('empresa salva')
-            this.exibirFormulario = false;
+            console.log('empresa editada')
+            this.exibirFormulario = false
             this.listarEmpresas()
-        }
+        },
+        mostraCriarSalvo(emp) {
+            this.criarEmpresa({empresa: emp}).then(
+               this.exibirFormulario = false
+            ).then(
+                this.listarEmpresas()
+            ).then(
+                alert('Empresa criada com sucesso!')
+            ).catch(
+                error => alert('Erro ao criar empresa asinc: ' + error.message)
+            )
+        },
+        
+
     }
 
 }

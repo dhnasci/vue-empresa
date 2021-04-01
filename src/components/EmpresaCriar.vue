@@ -2,19 +2,10 @@
   <div class="container">
     
       <div class="row col-sm-12">
-          <h2 class="font-weight-light col-sm-12">Editar Empresa</h2>
+          <h2 class="font-weight-light col-sm-12">Criar Empresa</h2>
       </div>
-      <form @submit.prevent="submit">
+      <form >
        
-       <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Id</label>
-            <input 
-                type="number" 
-                readonly 
-                class="form-control col-sm-10" 
-                v-model="empresaLocal.id">
-        </div>
-
          <div class="form-group row">
             <label class="col-sm-2 col-form-label">Nome</label>
             <input 
@@ -56,8 +47,8 @@
                     Voltar
             </button>
             <button 
-                type="submit" 
-                @click="$emit('salvar')"
+                type="button"
+                @click="$emit('criar', empresaLocal)"
                 class="btn btn-success">
                     Salvar
             </button>
@@ -72,39 +63,27 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   data() {
     return { 
-      empresaLocal: {}
+      empresaLocal: {
+        id: undefined,
+        nome: '', 
+        cnpj: '', 
+        endereco: '', 
+        email: ''
+      }
     }
   },
   computed: {
         ...mapState(['erro', 'empresaSelecionada', 'empresas']),
         ...mapGetters(['totalDeEmpresas'])
     },
-  watch: {
-    empresaSelecionada(empresaNova, empresaAntiga){
-      console.log('empresa Antiga: ' + empresaAntiga.nome);
-      this.sincronizar(empresaNova)
-    }
-  },
   created() {
-    console.log('created EmpresaEditar')
-    this.sincronizar(this.empresaSelecionada)
+    console.log('created EmpresaCriar')
   },
   methods: {
     ...mapActions(['listarEmpresas', 'criarEmpresa', 'editarEmpresa', 'selecionarEmpresa', 'buscarEmpresaPorId']),
     submit() {
-      console.log('salvar clicado submit ')
-      try {
-        this.editarEmpresa( { empresa: this.empresaLocal})
-        alert('Empresa editada com sucesso!')
-      } catch (error) {
-        alert('Erro ao editar empresa: ' + error.message)
-      }
-    },
-    sincronizar( novaEmpresa) {
-      this.empresaLocal = Object.assign( 
-          {}, 
-          novaEmpresa || { nome: '', cnpj: '', endereco: '', email: ''}
-      )
+      console.log('EmpresaCriar salvar clicado submit ')
+      
     }
   }
 
