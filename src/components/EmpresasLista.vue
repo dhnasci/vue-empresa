@@ -43,7 +43,8 @@
     <div class="row" v-else>
        <empresa-editar 
             v-if="exibirEditada"
-            @voltar="mostraEditarSalvo"
+            @voltar="exibirFormulario = false"
+            @salvar="mostraEditarSalvo"
         />
         <empresa-detalhes
             v-if="exibirSelecionada"
@@ -89,18 +90,22 @@ export default {
         ...mapGetters(['totalDeEmpresas'])
     },
     beforeUpdate(){
-        if (!this.exibirFormulario && this.exibirCriada){
-            console.log('beforeUpdate EmpresasLista')
+        if (!this.exibirFormulario && ( this.exibirCriada || this.exibirEditada )) {
             this.listarEmpresas()
-            this.exibirCriada = false
+            if (this.exibirCriada) 
+                this.exibirCriada = false
+            if (this.exibirEditada) 
+                this.exibirEditada = false
         }
     },
     created() {
-        console.log('created EmpresasLista')
         this.listarEmpresas()
     },
     watch: {
-        
+        empresas( empresasNova, empresasVelha){
+            console.log(empresasVelha)
+            this.sincronizar(empresasNova)
+        }
     },
     methods: {
         ...mapActions(['listarEmpresas', 'criarEmpresa', 'selecionarEmpresa', 'deletarEmpresa']),
@@ -132,10 +137,10 @@ export default {
         },
         mostraEditarSalvo() {
             this.exibirFormulario = false
+            this.mensagem = 'Empresa editada com sucesso!'
         },
         mostraCriarSalvo(emp) {
             emp.id = this.totalDeEmpresas + 1
-            console.log('mostraCriarSalvo ' + emp) 
             this.criarEmpresa({empresa: emp}).then(
                 this.exibirFormulario = false
             ).then(
@@ -152,6 +157,9 @@ export default {
             if (ok) {
                 this.deletarEmpresa({empresa: emp})
             }
+        },
+        sincronizar(novaEmpresas){
+            this.empresas = Object.assign( {}, novaEmpresas || this.empresas )
         }
     }
 }

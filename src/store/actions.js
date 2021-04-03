@@ -14,7 +14,6 @@ export default {
         empresa.nome = empresa.nome.toUpperCase();
         EmpresasService.postEmpresa(empresa).then(
             (response) => { 
-                console.log(response);
                 commit(types.CRIAR_EMPRESA, {empresa: response.data
                 }) }
         ).catch( erro => commit(types.SETAR_ERRO, { erro }))
@@ -28,13 +27,14 @@ export default {
                 commit(types.SELECIONAR_EMPRESA, {empresa: response.data}) }
         ).catch( erro => commit(types.SETAR_ERRO, { erro }))
     },
-    editarEmpresa: async ({commit} , {empresa}) => {
-        try {
-            const response = await EmpresasService.putEmpresa(empresa)
-            commit(types.EDITAR_EMPRESA, { empresa: response.data })
-        } catch (error) {
-            commit(types.SETAR_ERRO, { error })
-        }
+    editarEmpresa: ({commit} , {empresa}) => {
+        EmpresasService.putEmpresa(empresa).then(
+            response => { 
+                console.log(response.data.nome)
+                commit(types.EDITAR_EMPRESA, { empresa })
+            }
+        ).catch( erro => commit(types.SETAR_ERRO, { erro}))
+        
     },
     deletarEmpresa: async ({commit} , {empresa}) => {
         try {

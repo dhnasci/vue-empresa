@@ -53,7 +53,6 @@
             </button>
             <button 
                 type="submit" 
-                @click="$emit('salvar')"
                 class="btn btn-success">
                     Salvar
             </button>
@@ -81,16 +80,13 @@ export default {
     }
   },
   created() {
-    console.log('created EmpresaEditar')
     this.sincronizar(this.empresaSelecionada)
   },
   methods: {
     ...mapActions(['listarEmpresas', 'criarEmpresa', 'editarEmpresa', 'selecionarEmpresa', 'buscarEmpresaPorId']),
     submit() {
-      console.log('salvar clicado submit ')
       try {
         this.editarEmpresa( { empresa: this.empresaLocal})
-        alert('Empresa editada com sucesso!')
       } catch (error) {
         alert('Erro ao editar empresa: ' + error.message)
       }

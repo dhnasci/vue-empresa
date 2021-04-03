@@ -18,7 +18,6 @@ export default {
         state.empresaSelecionada = empresa
     },
     [CRIAR_EMPRESA]: (state, { empresa }) => {
-        console.log('CRIAR_EMPRESA > ', empresa.nome)
         state.empresas.push(empresa)
     },
     [EDITAR_EMPRESA]: (state, { empresa }) => {
